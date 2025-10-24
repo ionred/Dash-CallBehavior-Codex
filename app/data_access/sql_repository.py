@@ -249,16 +249,42 @@ class SqlRepository:
         subgroup: str,
         account_numbers: Sequence[str],
     ) -> None:
-        insert_sql = (
-            "INSERT INTO dbo.eventAccounts (eventName, subGroup, accountNumber) "
-            "SELECT ?, ?, ? WHERE NOT EXISTS ("
-            "SELECT 1 FROM dbo.eventAccounts ea WHERE ea.eventName = ? AND ea.subGroup = ? AND ea.accountNumber = ?"
-            ")"
-        )
+        if not account_numbers:
+            return
+
         cursor = connection.cursor()
         cursor.timeout = self._config.bulk_insert_timeout_seconds
-        for account in account_numbers:
-            cursor.execute(insert_sql, (event_name, subgroup, account, event_name, subgroup, account))
+        table_created = False
+        try:
+            cursor.execute("CREATE TABLE #TempAccounts (accountNumber NVARCHAR(15) NOT NULL)")
+            table_created = True
+
+            distinct_accounts = list(dict.fromkeys(account_numbers))
+            temp_insert_sql = "INSERT INTO #TempAccounts (accountNumber) VALUES (?)"
+            cursor.fast_executemany = True
+
+            chunk_size = 1000
+            records = [(account,) for account in distinct_accounts]
+            for index in range(0, len(records), chunk_size):
+                chunk = records[index : index + chunk_size]
+                cursor.executemany(temp_insert_sql, chunk)
+
+            merge_sql = (
+                "INSERT INTO dbo.eventAccounts (eventName, subGroup, accountNumber) "
+                "SELECT ?, ?, src.accountNumber "
+                "FROM (SELECT DISTINCT accountNumber FROM #TempAccounts) AS src "
+                "WHERE NOT EXISTS ("
+                "    SELECT 1 FROM dbo.eventAccounts ea "
+                "    WHERE ea.eventName = ? AND ea.subGroup = ? AND ea.accountNumber = src.accountNumber"
+                ")"
+            )
+            cursor.execute(merge_sql, (event_name, subgroup, event_name, subgroup))
+        finally:
+            if table_created:
+                try:
+                    cursor.execute("DROP TABLE #TempAccounts")
+                except pyodbc.Error:
+                    logger.exception("Failed to drop temporary account table during append operation")
 
     def delete_member_research(self, connection: pyodbc.Connection, event_name: str, subgroup: str) -> None:
         query = "DELETE FROM dbo.memberResearch WHERE eventName = ? AND subGroup = ?"
