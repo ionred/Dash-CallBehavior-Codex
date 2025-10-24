@@ -1,0 +1,157 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f6fa;
+}
+
+.app-container {
+    padding: 20px;
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr auto auto auto;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #dfe4ea;
+}
+
+.btn.primary {
+    background-color: #3742fa;
+    color: #fff;
+}
+
+.btn.icon {
+    font-size: 18px;
+    background-color: #f1f2f6;
+}
+
+.btn.link {
+    background: none;
+    color: #3742fa;
+    text-decoration: underline;
+}
+
+.btn.close {
+    background: none;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.graphs {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.graphs.hidden,
+.cards.hidden,
+.queue-filter.hidden,
+.modal.hidden {
+    display: none;
+}
+
+.graph {
+    flex: 1;
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cards {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card {
+    flex: 1;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.queue-filter {
+    margin-bottom: 20px;
+}
+
+.progress-container {
+    margin: 10px 0;
+    min-height: 24px;
+    color: #2f3542;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(47, 53, 66, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header,
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.date-pickers {
+    display: flex;
+    gap: 10px;
+}
+
+.upload {
+    border: 2px dashed #57606f;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.feedback {
+    color: #e84118;
+    min-height: 20px;
+}
+
+.strategy {
+    display: flex;
+    gap: 10px;
+}
+

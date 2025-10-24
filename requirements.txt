@@ -1,0 +1,7 @@
+Dash==2.15.0
+Flask==2.3.2
+flask-caching==2.1.0
+pandas==2.1.4
+uvicorn==0.24.0
+pyodbc==5.0.1
+python-dotenv==1.0.0
